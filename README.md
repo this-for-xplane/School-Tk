@@ -1,5 +1,5 @@
 # School-Tk
-YES monun, website brooo /
+YES, NOT FOR monun. For-School website brooo /
 For School project, (middleSchool 1)many bugs on it.
 if someone want to help? contact to seojunji62@gmail.com or (82+) 10-4862-7350
 it works Well on Android, iOS, Windows (I haven't checked for Mac and Linux)
@@ -17,6 +17,3 @@ it works Well on Android, iOS, Windows (I haven't checked for Mac and Linux)
 - HTML5
 - CSS3
 - Vanilla JavaScript
-
-
-# 6시간 대가리 짜내서 만들다 산책갔다 오고 그러면서 Cursor 써서 만든거라 영어쓰기 귀찮다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
