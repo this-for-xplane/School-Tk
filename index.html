@@ -312,57 +312,36 @@
         body.dark-mode .post-actions-menu button:hover {
             background-color: #444;
         }
-        /* 수정: 게시물 상세 보기 UI 디자인 개선 */
         .post-detail {
             max-height: 0;
             overflow: hidden;
             padding: 0 20px;
-            background-color: #fafafa;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin: 10px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: max-height 0.3s ease-out, padding 0.3s ease-out, opacity 0.3s ease-out;
-            opacity: 0;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
         }
         body.dark-mode .post-detail {
-            background-color: #2a2a2a;
-            border-color: #555;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            background-color: #333;
+            border-bottom: 1px solid #444;
         }
         .post-detail.active {
             padding: 20px;
-            opacity: 1;
             overflow: auto;
         }
         .post-detail h2 {
-            margin: 0 0 10px;
-            font-size: 1.6em;
-            font-weight: 600;
-            color: #333;
-        }
-        body.dark-mode .post-detail h2 {
-            color: #fff;
+            margin-top: 0;
+            font-size: 1.5em;
         }
         .post-detail .meta {
             color: #666;
-            font-size: 0.9em;
             margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
         }
         body.dark-mode .post-detail .meta {
             color: #aaa;
-            border-bottom-color: #444;
         }
         .post-detail .content {
             white-space: pre-wrap;
             font-size: 1em;
-            line-height: 1.6;
-            color: #333;
-        }
-        body.dark-mode .post-detail .content {
-            color: #fff;
         }
         .main-container {
             display: flex;
@@ -1419,50 +1398,35 @@
             }
         }
 
-        // 수정: 게시글 상세 보기 - 토글 및 조회수 중복 방지
+        // 게시글 상세 보기: 아코디언 스타일로 토글
         function viewPost(postId) {
             try {
+                // 모든 아코디언 닫기
+                document.querySelectorAll('.post-detail').forEach(detail => {
+                    detail.classList.remove('active');
+                    detail.style.maxHeight = null;
+                    detail.style.padding = '0 20px';
+                });
+
+                // 선택된 게시글의 아코디언 열기
                 const detailDiv = document.getElementById(`post-detail-${postId}`);
                 if (!detailDiv) {
                     alert(translations[currentLanguage].postNotFound);
                     return;
                 }
 
-                // 이미 열려있는 경우 닫기
-                if (detailDiv.classList.contains('active')) {
-                    detailDiv.classList.remove('active');
-                    detailDiv.style.maxHeight = null;
-                    detailDiv.style.padding = '0 20px';
-                    detailDiv.style.opacity = '0';
-                    return;
+                // 조회수 증가
+                let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                const post = posts.find(p => p.id === postId);
+                if (post) {
+                    post.views += 1;
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    loadPosts(); // 조회수 및 상세 보기 업데이트
                 }
 
-                // 모든 아코디언 닫기
-                document.querySelectorAll('.post-detail').forEach(detail => {
-                    detail.classList.remove('active');
-                    detail.style.maxHeight = null;
-                    detail.style.padding = '0 20px';
-                    detail.style.opacity = '0';
-                });
-
-                // 선택된 게시글 열기
+                // 아코디언 토글
                 detailDiv.classList.add('active');
                 detailDiv.style.maxHeight = detailDiv.scrollHeight + 'px';
-                detailDiv.style.padding = '20px';
-                detailDiv.style.opacity = '1';
-
-                // 조회수 증가 (세션당 1회)
-                const viewedKey = `viewed-${postId}`;
-                if (!sessionStorage.getItem(viewedKey)) {
-                    let posts = JSON.parse(localStorage.getItem('posts') || '[]');
-                    const post = posts.find(p => p.id === postId);
-                    if (post) {
-                        post.views += 1;
-                        localStorage.setItem('posts', JSON.stringify(posts));
-                        sessionStorage.setItem(viewedKey, 'true');
-                        loadPosts(); // 조회수 및 상세 보기 업데이트
-                    }
-                }
             } catch (error) {
                 console.error('게시글 상세 보기 오류:', error);
                 alert(translations[currentLanguage].postNotFound);
@@ -1502,7 +1466,7 @@
             input.onblur = function() {
                 element.textContent = input.value || currentValue;
                 localStorage.setItem(fieldId, input.value || currentValue);
-                elementスタイル.display = 'inline';
+                element.style.display = 'inline';
                 input.remove();
             };
             input.onkeydown = function(e) {
@@ -1712,43 +1676,7 @@
 
         // 도움말 관련 함수: 미구현 알림
         function showTerms() {
-            alert('개인정보 수집·이용 동의서: `개인정보 수집∙이용 동의서
-
-회사명: ToCive
-ToCive(이하 "회사")는 개인정보 보호법에 따라 고객의 개인정보를 안전하게 관리하고자 아래와 같이 개인정보 수집∙이용에 대한 동의를 받고자 합니다.
-
-1. 개인정보 수집∙이용 목적
-- 서비스 제공 및 회원 관리
-- 고객 문의 및 민원 처리
-- 서비스 개선 및 맞춤형 서비스 제공
-- 법적 의무 준수
-
-2. 수집하는 개인정보 항목
-- 필수항목: 이름, 연락처, 이메일 주소
-- 선택항목: 생년월일, 주소
-
-3. 개인정보 보유 및 이용 기간
-- 수집된 개인정보는 수집∙이용 목적이 달성된 후 지체 없이 파기합니다.
-- 단, 관계 법령에 따라 보존이 필요한 경우 해당 법령에서 정한 기간 동안 보관합니다.
-
-4. 개인정보 제3자 제공
-- 회사는 고객의 개인정보를 제3자에게 제공하지 않습니다.
-- 단, 고객의 사전 동의를 받은 경우 또는 법령에 따른 경우 예외로 합니다.
-
-5. 개인정보 처리 위탁
-- 회사는 서비스 제공을 위해 아래와 같은 업무를 외부에 위탁할 수 있으며, 위탁받은 업체는 개인정보 보호법에 따라 개인정보를 안전하게 처리할 의무를 가집니다.
-- 위탁업체: (해당 시 기재 예정)
-- 위탁업무: (해당 시 기재 예정)
-
-6. 동의 거부 권리 및 불이익
-- 고객은 개인정보 수집∙이용에 대한 동의를 거부할 권리가 있으며, 동의를 거부할 경우 서비스 이용에 제한이 있을 수 있습니다.
-
-7. 개인정보 보호 책임자
-- 성명: (지서준)
-- 직책: (CEO, COO)
-- 연락처: (010-4862-7350), (seojunji62@gmail.com)
-
-서비스를 이용함으로서 위 내용을 충분히 이해하였으며, 이에 동의하는것으로 간주합니다.');
+            alert('개인정보 수집·이용 동의서: 구현 예정');
         }
         function showLocationSettings() {
             alert('위치 정보 설정: 구현 예정');
@@ -1760,7 +1688,7 @@ ToCive(이하 "회사")는 개인정보 보호법에 따라 고객의 개인정�
             alert('자주 찾는 도움말: 구현 예정');
         }
         function showContact() {
-            alert('문의하기: seounji62@gmail.com/010-4862-7350');
+            alert('문의하기: 구현 예정');
         }
         function showUserGuide() {
             alert('사용 가이드: 구현 예정');
